@@ -1,3 +1,7 @@
+CREATE DATABASE ncc_prod;
+
+USE ncc_prod;
+
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
@@ -10,7 +14,7 @@ CREATE TABLE cadets (
     user_id INT NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     dob DATE NOT NULL,
-    rank VARCHAR(50) NOT NULL,
+    `rank` VARCHAR(50) NOT NULL,  -- Enclosed in backticks to avoid conflict with reserved keyword
     email VARCHAR(100) NOT NULL,
     contact_number VARCHAR(15) NOT NULL,
     emergency_contact_number VARCHAR(15) NOT NULL,
@@ -44,9 +48,9 @@ CREATE TABLE attendance (
     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
     UNIQUE (cadet_id, event_id)  -- Prevents multiple attendance entries for the same cadet and event
 );
+
 CREATE TABLE carousel_images (
     id INT AUTO_INCREMENT PRIMARY KEY,
     image VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-

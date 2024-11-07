@@ -1,7 +1,7 @@
 <?php
 // Assuming you have some logic to check if the user is logged in and their role.
 // Example:
-session_start();
+
 
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user_id']);
