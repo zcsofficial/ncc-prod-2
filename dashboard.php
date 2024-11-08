@@ -112,7 +112,7 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
     <!-- Blog Section -->
     <section id="blogs" class="py-5">
         <div class="container">
-            <h2 class="text-center mb-4">Our Projects</h2>
+            <h2 class="text-center mb-4">Blogs</h2>
             <div class="row">
                 <?php
                 // Fetch all blog posts from the database using PDO
@@ -146,7 +146,7 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
     <!-- Image Carousel Section -->
     <section id="carousel" class="py-5">
         <div class="container">
-            <h2 class="text-center mb-4">Image Carousel</h2>
+            <h2 class="text-center mb-4">Cadets Gallery</h2>
             <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <?php
@@ -217,15 +217,15 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
 <div class="modal fade" id="addImageModal" tabindex="-1" aria-labelledby="addImageModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="add_image.php" method="POST" enctype="multipart/form-data">
+            <form action="upload_image.php" method="POST" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addImageModalLabel">Upload Image for Carousel</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="carousel_image" class="form-label">Upload Image</label>
-                        <input type="file" class="form-control" id="carousel_image" name="carousel_image" accept="image/*" required>
+                        <label for="carouselImage" class="form-label">Choose Image</label>
+                        <input type="file" class="form-control" id="carouselImage" name="carouselImage" accept="image/*" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -239,20 +239,26 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
 
 <!-- Footer Section -->
 <footer>
-    <p>&copy; 2024 NCC Blog. All Rights Reserved.</p>
-    <div>
-        <a href="#" class="footer-icon text-white"><i class="fab fa-facebook"></i></a>
-        <a href="#" class="footer-icon text-white"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="footer-icon text-white"><i class="fab fa-instagram"></i></a>
+    <div class="container">
+        <p>&copy; 2024 NCC Journey. All rights reserved.</p>
+        <div>
+            <a href="https://www.facebook.com/" class="footer-icon" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://twitter.com/" class="footer-icon" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.instagram.com/" class="footer-icon" target="_blank"><i class="fab fa-instagram"></i></a>
+        </div>
     </div>
 </footer>
 
-<!-- Bootstrap and JS -->
+<!-- JS Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    function zoomImage(image) {
-        image.classList.toggle('zoomed');
+    function zoomImage(img) {
+        if (img.classList.contains('zoomed')) {
+            img.classList.remove('zoomed');
+        } else {
+            img.classList.add('zoomed');
+        }
     }
 </script>
 

@@ -73,35 +73,45 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
             margin-bottom: 20px;
         }
 
-        .carousel-item img {
-            max-height: 500px;
-            object-fit: cover;
-            transition: transform 0.3s ease-in-out;
+        /* Blog Section */
+        #blogs {
+            padding: 60px 0;
+            background-color: #f8f9fa;
         }
 
-        .carousel-item img.zoomed {
-            transform: scale(1.5);
-        }
-
-        /* Card Styling */
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
+        .blog-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .card-body {
-            padding: 20px;
+            flex-grow: 1;
         }
 
         .card-title {
             font-weight: 600;
         }
 
+        /* Consistent Card Sizes */
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img-top {
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        /* Footer Styling */
         footer {
             background-color: #343a40;
             color: white;
@@ -109,23 +119,6 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
             text-align: center;
         }
 
-        /* Modal Styling */
-        .modal-header, .modal-footer {
-            border: none;
-        }
-
-        /* Blog Section */
-        #blogs {
-            padding: 60px 0;
-            background-color: #f8f9fa;
-        }
-
-        /* Carousel Section */
-        #carousel {
-            margin-top: 50px;
-        }
-
-        /* Footer Styling */
         .footer-icon {
             font-size: 1.5rem;
             margin: 0 10px;
@@ -174,7 +167,7 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
 <!-- Projects Section -->
 <section id="blogs" class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-4">Our Projects <i class="fas fa-project-diagram"></i></h2>
+        <h2 class="text-center mb-4">Blogs <i class="fas fa-project-diagram"></i></h2>
         <div class="row">
             <?php
             // Fetch all blog posts from the database using PDO
@@ -187,7 +180,7 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
             foreach ($posts as $post) :
             ?>
                 <div class="col-md-4 mb-3 animate__animated animate__fadeIn">
-                    <div class="card">
+                    <div class="card blog-card">
                         <?php if (!empty($post['image'])): ?>
                             <img src="uploads/<?php echo htmlspecialchars($post['image']); ?>" class="card-img-top" alt="Blog Image">
                         <?php else: ?>
@@ -197,6 +190,7 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
                             <h5 class="card-title"><?php echo htmlspecialchars($post['title']); ?></h5>
                             <p class="card-text"><?php echo substr(htmlspecialchars($post['body']), 0, 100); ?>...</p>
                             <small class="text-muted">By <?php echo htmlspecialchars($post['username']); ?> on <?php echo date('d M Y', strtotime($post['created_at'])); ?></small>
+                            <a href="post.php?id=<?php echo $post['id']; ?>" class="btn btn-primary mt-3">Read More</a>
                         </div>
                     </div>
                 </div>
@@ -208,7 +202,7 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
 <!-- Image Carousel Section -->
 <section id="carousel" class="py-5">
     <div class="container">
-        <h2 class="text-center mb-4">Image Carousel <i class="fas fa-images"></i></h2>
+        <h2 class="text-center mb-4">Cadets Gallery <i class="fas fa-images"></i></h2>
         <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <?php
@@ -242,10 +236,10 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
     </div>
 </section>
 
-<!-- Footer -->
+<!-- Footer Section -->
 <footer>
     <div class="container">
-        <p>&copy; 2024 NCC Journey | All Rights Reserved</p>
+        <p>&copy; <?php echo date('Y'); ?> NCC Cadet Blog. All rights reserved.</p>
         <div>
             <a href="#" class="footer-icon"><i class="fab fa-facebook"></i></a>
             <a href="#" class="footer-icon"><i class="fab fa-twitter"></i></a>
@@ -254,24 +248,14 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
     </div>
 </footer>
 
-<!-- JavaScript Libraries -->
+<!-- JS Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
+<!-- Preloader Hide -->
 <script>
-    // Zoom image functionality for carousel
-    function zoomImage(img) {
-        if (img.classList.contains('zoomed')) {
-            img.classList.remove('zoomed');
-        } else {
-            img.classList.add('zoomed');
-        }
-    }
-
-    // Preloader hiding function
-    window.addEventListener('load', function() {
-        const preloader = document.getElementById('preloader');
-        preloader.classList.add('hidden');
+    window.addEventListener('load', () => {
+        document.getElementById('preloader').classList.add('hidden');
     });
 </script>
 
