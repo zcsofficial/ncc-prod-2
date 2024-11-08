@@ -35,7 +35,7 @@ $attendance_query = "
     SELECT e.event_name, e.event_date, a.status 
     FROM attendance a 
     JOIN events e ON a.event_id = e.id 
-    WHERE a.cadet_id = (SELECT id FROM cadets WHERE user_id = :user_id)
+    WHERE a.cadet_id IN (SELECT id FROM cadets WHERE user_id = :user_id)
     ORDER BY e.event_date DESC
 ";
 $attendance_stmt = $conn->prepare($attendance_query);
