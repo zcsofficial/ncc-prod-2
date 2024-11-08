@@ -1,7 +1,7 @@
 <?php
 // Assuming you have some logic to check if the user is logged in and their role.
 // Example:
-
+session_start();
 
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user_id']);
@@ -27,7 +27,7 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                 <?php if ($isLoggedIn): ?>
                    
                     <li class="nav-item"><a class="nav-link" href="attendance.php">Attendance</a></li>
-                    <li class="nav-item"><a class="nav-link" href="events.php">Events</a></li>
+                   
                 <?php endif; ?>
 
                 <li class="nav-item"><a class="nav-link" href="contact.php">Contact</a></li>
