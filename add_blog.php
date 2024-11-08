@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':image', $image);
 
     if ($stmt->execute()) {
-        header("Location: index.php");
+        header("Location: dashboard.php");
         exit();
     } else {
         echo "Error: Unable to save the post.";

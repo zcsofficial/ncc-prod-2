@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['carousel_image'])) {
         $stmt->execute();
 
         // Redirect to index.php after successful upload
-        header('Location: index.php');
+        header('Location: dashboard.php');
         exit;
     } else {
         echo "Sorry, there was an error uploading your file.";
