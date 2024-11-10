@@ -14,7 +14,7 @@ try {
     echo "Error fetching camps: " . $e->getMessage();
 }
 
-// Determine eligibility based on attendance, achievements, and rank priority
+// Function to check cadet eligibility for camp
 function isEligible($cadetId, $conn) {
     try {
         // Calculate attendance record
@@ -71,13 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Available Camps</title>
-    
+
     <!-- Bootstrap CSS for layout and styling -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- Font Awesome for icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
+
     <!-- Google Fonts for better typography -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
@@ -160,37 +160,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
                 <input type="date" name="camp_date" id="camp_date" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label class="form-label">Eligibility - Rank</label>
-                <select name="eligibility_ranks[]" class="form-control" multiple>
-                    <option value="Rank 1">Rank 1</option>
-                    <option value="Rank 2">Rank 2</option>
-                    <option value="Rank 3">Rank 3</option>
-                    <option value="Rank 4">Rank 4</option>
+                <label for="eligibility_ranks" class="form-label">Eligibility - Ranks</label>
+                <select name="eligibility_ranks[]" id="eligibility_ranks" class="form-control" multiple required>
+                    <option value="LANCE CORPORAL (L/CPL)">LANCE CORPORAL (L/CPL)</option>
+                    <option value="CORPORAL (CPL)">CORPORAL (CPL)</option>
+                    <option value="SERGEANT (SGT)">SERGEANT (SGT)</option>
+                    <option value="UNDER OFFICER (UO)">UNDER OFFICER (UO)</option>
+                    <option value="SENIOR UNDER OFFICER (SUO)">SENIOR UNDER OFFICER (SUO)</option>
+                    <option value="ASSOCIATE NCC OFFICER (ANO)">ASSOCIATE NCC OFFICER (ANO)</option>
+                    <option value="COMPANY SERGEANT MAJOR (CSM)">COMPANY SERGEANT MAJOR (CSM)</option>
                 </select>
             </div>
             <div class="mb-3">
-                <label for="eligibility_achievements" class="form-label">Eligibility - Achievements (Minimum)</label>
+                <label for="eligibility_achievements" class="form-label">Eligibility - Achievements</label>
                 <input type="number" name="eligibility_achievements" id="eligibility_achievements" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label for="eligibility_attendance" class="form-label">Eligibility - Attendance (Minimum %)</label>
+                <label for="eligibility_attendance" class="form-label">Eligibility - Attendance (%)</label>
                 <input type="number" name="eligibility_attendance" id="eligibility_attendance" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-success">Create Camp</button>
+            <button type="submit" class="btn btn-success">Submit</button>
         </form>
     <?php endif; ?>
 </div>
 
+<!-- Bootstrap and jQuery JS for functionality -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-function toggleForm() {
-    const form = document.getElementById('campForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
+    // Function to toggle the display of the form
+    function toggleForm() {
+        const form = document.getElementById('campForm');
+        form.style.display = (form.style.display === 'none') ? 'block' : 'none';
+    }
 </script>
-
-<!-- Bootstrap JS, Popper.js and FontAwesome -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 
 </body>
 </html>

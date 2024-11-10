@@ -60,13 +60,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Commit the transaction
         $conn->commit();
         
-         // Redirect to a success page or show a success message
-         if ($stmt->execute()) {
-            $_SESSION['success_message'] = "Cadet registered successfully!";
-            header("Location: admin_console.php");
-        } else {
-            $_SESSION['error_message'] = "There was an error registering the cadet. Please try again.";
-        }
+        // Redirect to the admin_console.php page after successful registration
+        header('Location: admin_console.php');
+        exit; // Ensure no further code is executed
+        
     } catch (PDOException $e) {
         // If there is an error, roll back the transaction
         $conn->rollBack();

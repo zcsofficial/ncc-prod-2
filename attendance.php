@@ -31,14 +31,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_attendance']) &&
 
     if ($event_id) {
         foreach ($_POST['status'] as $cadet_id => $status) {
+            // Validate and set status to 'absent' if empty
+            $status = $status ? $status : 'absent';
+
             $stmt3 = $conn->prepare("SELECT * FROM attendance WHERE cadet_id = :cadet_id AND event_id = :event_id");
             $stmt3->execute(['cadet_id' => $cadet_id, 'event_id' => $event_id]);
             $attendance = $stmt3->fetch(PDO::FETCH_ASSOC);
 
+            // If attendance already exists, update the status
             if ($attendance) {
                 $stmt4 = $conn->prepare("UPDATE attendance SET status = :status WHERE cadet_id = :cadet_id AND event_id = :event_id");
                 $stmt4->execute(['status' => $status, 'cadet_id' => $cadet_id, 'event_id' => $event_id]);
             } else {
+                // Otherwise, insert a new attendance record
                 $stmt5 = $conn->prepare("INSERT INTO attendance (cadet_id, event_id, status) VALUES (:cadet_id, :event_id, :status)");
                 $stmt5->execute(['cadet_id' => $cadet_id, 'event_id' => $event_id, 'status' => $status]);
             }
@@ -62,6 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_event']) && $r
     // Mark attendance for the newly created event
     if (isset($_POST['status'])) {
         foreach ($_POST['status'] as $cadet_id => $status) {
+            // If cadet is not present, mark as absent
+            if (empty($status)) {
+                $status = 'absent'; // Default to absent if no status is provided
+            }
+
+            // Insert attendance with provided status
             $stmt5 = $conn->prepare("INSERT INTO attendance (cadet_id, event_id, status) VALUES (:cadet_id, :event_id, :status)");
             $stmt5->execute(['cadet_id' => $cadet_id, 'event_id' => $event_id, 'status' => $status]);
         }
@@ -91,7 +102,7 @@ if (isset($_GET['event_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance Page</title>
+    <title>Attendance Management</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -101,39 +112,25 @@ if (isset($_GET['event_id'])) {
             font-family: 'Roboto', sans-serif;
         }
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin-top: 20px;
         }
         .btn-primary {
             background-color: #007bff;
         }
-        .attendance-table th, .attendance-table td {
+        .table th, .table td {
             text-align: center;
             vertical-align: middle;
         }
+        .table th {
+            background-color: #007bff;
+            color: white;
+        }
+        .attendance-table th, .attendance-table td {
+            padding: 1rem;
+        }
         .modal .modal-content {
             border-radius: 10px;
-        }
-        .present {
-            background-color: #28a745;
-            color: white;
-        }
-        .absent {
-            background-color: #dc3545;
-            color: white;
-        }
-        .excused {
-            background-color: #ffc107;
-            color: black;
-        }
-        .status-count {
-            font-weight: bold;
-        }
-        .attendance-row {
-            cursor: pointer;
-        }
-        .attendance-row .attendance-details {
-            display: none;
         }
         .modal-header, .card-header {
             background-color: #007bff;
@@ -146,9 +143,25 @@ if (isset($_GET['event_id'])) {
         .card-footer {
             text-align: center;
         }
+
+        /* Status Badge CSS */
         .badge {
             font-size: 1rem;
             font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+        .badge.present {
+            background-color: #28a745;
+            color: white;
+        }
+        .badge.absent {
+            background-color: #dc3545;
+            color: white;
+        }
+        .badge.excused {
+            background-color: #ffc107;
+            color: black;
         }
     </style>
 </head>
@@ -190,23 +203,22 @@ if (isset($_GET['event_id'])) {
                     <h4 class="mb-0">Event Attendance</h4>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered attendance-table">
                         <thead>
                             <tr>
-                                <th>Cadet Name</th>
+                                <th>Name</th>
                                 <th>Rank</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($attendanceData as $attendance): ?>
-                                <tr class="attendance-row">
+                                <tr>
                                     <td><?php echo htmlspecialchars($attendance['full_name']); ?></td>
                                     <td><?php echo htmlspecialchars($attendance['rank']); ?></td>
                                     <td>
-                                        <span class="badge 
-                                        <?php echo $attendance['status'] == 'present' ? 'bg-success' : ($attendance['status'] == 'absent' ? 'bg-danger' : 'bg-warning'); ?>">
-                                            <?php echo ucfirst(htmlspecialchars($attendance['status'])); ?>
+                                        <span class="badge <?php echo strtolower($attendance['status']); ?>">
+                                            <?php echo ucfirst($attendance['status']); ?>
                                         </span>
                                     </td>
                                 </tr>
@@ -216,8 +228,8 @@ if (isset($_GET['event_id'])) {
                 </div>
             </div>
         <?php endif; ?>
-        
-        <!-- Create Event Modal -->
+
+        <!-- Modal for Event Creation -->
         <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -225,37 +237,38 @@ if (isset($_GET['event_id'])) {
                         <h5 class="modal-title" id="createEventModalLabel">Create New Event</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <form action="attendance.php" method="post">
+                    <form action="attendance.php" method="POST">
+                        <div class="modal-body">
                             <div class="mb-3">
                                 <label for="event_name" class="form-label">Event Name</label>
-                                <input type="text" class="form-control" id="event_name" name="event_name" required>
+                                <input type="text" class="form-control" name="event_name" id="event_name" required>
                             </div>
                             <div class="mb-3">
                                 <label for="event_date" class="form-label">Event Date</label>
-                                <input type="date" class="form-control" id="event_date" name="event_date" required>
+                                <input type="date" class="form-control" name="event_date" id="event_date" required>
                             </div>
-
-                            <!-- Cadet Attendance Section -->
-                            <h5 class="my-3">Mark Attendance</h5>
-                            <div class="form-group">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Mark Attendance for Cadets</label>
                                 <?php foreach ($cadets as $cadet): ?>
                                     <div class="form-check">
-                                        <input type="checkbox" class="form-check-input" name="status[<?php echo $cadet['id']; ?>]" value="present">
-                                        <label class="form-check-label" for="cadet_<?php echo $cadet['id']; ?>"><?php echo htmlspecialchars($cadet['full_name']); ?></label>
+                                        <input class="form-check-input" type="radio" name="status[<?php echo $cadet['id']; ?>]" id="status_<?php echo $cadet['id']; ?>" value="present">
+                                        <label class="form-check-label" for="status_<?php echo $cadet['id']; ?>">
+                                            <?php echo htmlspecialchars($cadet['full_name']); ?>
+                                        </label>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-
-                            <button type="submit" name="create_event" class="btn btn-primary mt-3">Create Event</button>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" name="create_event" class="btn btn-primary">Create Event</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
 </body>
 </html>

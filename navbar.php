@@ -1,11 +1,34 @@
 <?php
-// Assuming you have some logic to check if the user is logged in and their role.
+
 
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user_id']);
 
 // Check if the user is an admin
 $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+
+if ($isLoggedIn) {
+    // Fetch notifications for the logged-in user
+    $userId = $_SESSION['user_id'];
+
+    // Database connection
+    include('db.php');
+
+    // Fetch notifications from the database
+    $stmt = $conn->prepare("SELECT * FROM notifications WHERE user_id = :user_id ORDER BY created_at DESC LIMIT 5");
+    $stmt->bindParam(':user_id', $userId);
+    $stmt->execute();
+    $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Count unread notifications (for example purposes, assuming a field "read" to track read/unread)
+    $unreadCount = 0;
+    foreach ($notifications as $notification) {
+        // Check if the 'read' key exists before accessing it
+        if (isset($notification['read']) && $notification['read'] == 0) {
+            $unreadCount++;
+        }
+    }
+}
 ?>
 
 <!-- Navbar with Conditional Links Based on Authentication and Role -->
@@ -28,6 +51,7 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 
                 <li class="nav-item"><a class="nav-link" href="camp.php">Camps</a></li>
                 <li class="nav-item"><a class="nav-link" href="testimonial.php">Testimonial</a></li>
+                <li class="nav-item"><a class="nav-link" href="achievement.php">Achievements</a></li>
                 <li class="nav-item"><a class="nav-link" href="contact.php">Contact</a></li>
             </ul>
 
@@ -37,12 +61,14 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                 <div class="dropdown ms-3">
                     <button class="btn btn-outline-secondary rounded-pill" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-bell"></i>
-                        <span class="badge bg-danger">3</span> <!-- Example badge count -->
+                        <span class="badge bg-danger"><?= $unreadCount ?></span> <!-- Notification count -->
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-envelope"></i> New message received</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile updated</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> System settings changed</a></li>
+                        <?php foreach ($notifications as $notification): ?>
+                            <li><a class="dropdown-item" href="#">
+                                <i class="fas fa-bell"></i> <?= htmlspecialchars($notification['message']) ?>
+                            </a></li>
+                        <?php endforeach; ?>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item text-center" href="notifications.php">View all notifications</a></li>
                     </ul>
@@ -69,15 +95,3 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         </div>
     </div>
 </nav>
-
-<!-- Optional CSS for Notification Badge -->
-<style>
-    .badge {
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        padding: 5px 10px;
-        border-radius: 50%;
-        font-size: 0.8em;
-    }
-</style>

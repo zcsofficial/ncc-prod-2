@@ -203,6 +203,9 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
     <a href="manage_blogs.php"><i class="fas fa-blog"></i> Manage Blogs</a>
     <a href="attendance.php"><i class="fas fa-check-circle"></i> Attendance</a>
     <a href="register_cadet.php"><i class="fas fa-user-plus"></i> Register Cadet</a>
+    <a href="add_achievements.php"><i class="fas fa-trophy"></i> Add Achievements</a>
+    <a href="send_notification.php"><i class="fas fa-comment"></i> Send Notification</a>
+    <a href="add_camps.php"><i class="fas fa-campground"></i> Add Camps</a>
 </div>
 
 <!-- Main Content -->
@@ -300,9 +303,20 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     <!-- Rank -->
                     <div class="mb-3">
-                        <label for="rank" class="form-label">Rank</label>
-                        <input type="text" id="rank" name="rank" class="form-control" required>
-                    </div>
+                <label for="rank" class="form-label">Rank</label>
+                <select name="rank" id="rank" class="form-control">
+                    <option value="None" selected>None</option>
+                    <option value="ASSOCIATE NCC OFFICER (ANO)">ASSOCIATE NCC OFFICER (ANO)</option>
+                    <option value="SENIOR UNDER OFFICER (SUO)">SENIOR UNDER OFFICER (SUO)</option>
+                    <option value="UNDER OFFICER (UO)">UNDER OFFICER (UO)</option>
+                    <option value="COMPANY SERGEANT MAJOR (CSM)">COMPANY SERGEANT MAJOR (CSM)</option>
+                    <option value="COMPANY QUARTER MASTER SERGEANT (CQMS)">COMPANY QUARTER MASTER SERGEANT (CQMS)</option>
+                    <option value="SERGEANT (SGT)">SERGEANT (SGT)</option>
+                    <option value="CORPORAL (CPL)">CORPORAL (CPL)</option>
+                    <option value="LANCE CORPORAL (L/CPL)">LANCE CORPORAL (L/CPL)</option>
+                    <option value="CADET (CDT)">CADET (CDT)</option>
+                </select>
+            </div>
 
                     <!-- Phone Number -->
                     <div class="mb-3">

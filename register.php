@@ -98,7 +98,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="mb-3">
                 <label for="rank" class="form-label">Rank</label>
-                <input type="text" name="rank" id="rank" class="form-control" required>
+                <select name="rank" id="rank" class="form-control">
+                    <option value="None" selected>None</option>
+                    <option value="ASSOCIATE NCC OFFICER (ANO)">ASSOCIATE NCC OFFICER (ANO)</option>
+                    <option value="SENIOR UNDER OFFICER (SUO)">SENIOR UNDER OFFICER (SUO)</option>
+                    <option value="UNDER OFFICER (UO)">UNDER OFFICER (UO)</option>
+                    <option value="COMPANY SERGEANT MAJOR (CSM)">COMPANY SERGEANT MAJOR (CSM)</option>
+                    <option value="COMPANY QUARTER MASTER SERGEANT (CQMS)">COMPANY QUARTER MASTER SERGEANT (CQMS)</option>
+                    <option value="SERGEANT (SGT)">SERGEANT (SGT)</option>
+                    <option value="CORPORAL (CPL)">CORPORAL (CPL)</option>
+                    <option value="LANCE CORPORAL (L/CPL)">LANCE CORPORAL (L/CPL)</option>
+                    <option value="CADET (CDT)">CADET (CDT)</option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>

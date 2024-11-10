@@ -89,6 +89,13 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
                 font-size: 1.5rem;
             }
         }
+
+        .container {
+            margin-top: 50px;
+        }
+        .alert {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -215,27 +222,29 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
 
 <!-- Modal for Image Upload (Admin Only) -->
 <div class="modal fade" id="addImageModal" tabindex="-1" aria-labelledby="addImageModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form action="upload_image.php" method="POST" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addImageModalLabel">Upload Image for Carousel</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addImageModalLabel">Upload New Carousel Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="add_image.php" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
-                        <label for="carouselImage" class="form-label">Choose Image</label>
-                        <input type="file" class="form-control" id="carouselImage" name="carouselImage" accept="image/*" required>
+                        <label for="carousel_image" class="form-label">Choose an Image</label>
+                        <input type="file" class="form-control" name="carousel_image" id="carousel_image" required>
+                        <small class="form-text text-muted">Allowed file types: JPG, JPEG, PNG, GIF. Max size: 5MB.</small>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Upload Image</button>
-                </div>
-            </form>
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+
 
 <!-- Footer Section -->
 <footer>

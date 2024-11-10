@@ -14,7 +14,7 @@ $user_id = $_SESSION['user_id'];
 $query = "
     SELECT u.username, u.role, 
            c.full_name, c.dob, c.rank, c.email, c.contact_number, 
-           c.emergency_contact_number
+           c.emergency_contact_number, c.profile_picture
     FROM users u 
     JOIN cadets c ON u.id = c.user_id 
     WHERE u.id = :user_id
@@ -32,7 +32,7 @@ if (!$user) {
 
 // Fetch attendance data for the logged-in user
 $attendance_query = "
-    SELECT e.event_name, e.event_date, a.status 
+    SELECT e.event_name, e.event_date, a.status
     FROM attendance a 
     JOIN events e ON a.event_id = e.id 
     WHERE a.cadet_id IN (SELECT id FROM cadets WHERE user_id = :user_id)
@@ -42,6 +42,30 @@ $attendance_stmt = $conn->prepare($attendance_query);
 $attendance_stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
 $attendance_stmt->execute();
 $attendance_result = $attendance_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Calculate attendance percentage
+$total_events = count($attendance_result);
+$present_events = 0;
+
+foreach ($attendance_result as $attendance) {
+    if ($attendance['status'] == 'present') {
+        $present_events++;
+    }
+}
+
+$attendance_percentage = $total_events > 0 ? ($present_events / $total_events) * 100 : 0;
+
+// Fetch achievements data for the logged-in user
+$achievements_query = "
+    SELECT achievement_name, achievement_date
+    FROM achievements 
+    WHERE cadet_id IN (SELECT id FROM cadets WHERE user_id = :user_id)
+    ORDER BY achievement_date DESC
+";
+$achievements_stmt = $conn->prepare($achievements_query);
+$achievements_stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+$achievements_stmt->execute();
+$achievements_result = $achievements_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Check if the user is logged in
 $isLoggedIn = isset($_SESSION['user_id']);
@@ -117,6 +141,29 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
             background-color: #218838;
         }
 
+        .achievements-list {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .achievements-list h5 {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .achievements-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .achievements-list ul li {
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
         @media (max-width: 768px) {
             .profile-header {
                 padding: 20px;
@@ -137,6 +184,7 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
         <!-- Profile Header -->
         <div class="col-lg-4 col-md-5">
             <div class="profile-header text-center">
+                <img src="uploads/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile Picture" class="img-fluid rounded-circle mb-3" width="120" height="120">
                 <h3 class="card-title"><?php echo htmlspecialchars($user['full_name']); ?></h3>
                 <p class="text-muted">Rank: <?php echo htmlspecialchars($user['rank']); ?></p>
                 <span class="badge badge-role"><?php echo htmlspecialchars(ucfirst($user['role'])); ?></span>
@@ -170,6 +218,7 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
                 <!-- Attendance History -->
                 <div class="card card-table p-3">
                     <h5 class="mb-4">Attendance History</h5>
+                    <p><strong>Attendance Percentage:</strong> <?php echo round($attendance_percentage, 2); ?>%</p>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -190,18 +239,33 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
-                                <tr><td colspan="3">No attendance records found.</td></tr>
+                                <tr>
+                                    <td colspan="3">No attendance data found.</td>
+                                </tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Achievements -->
+                <div class="achievements-list">
+                    <h5>Recent Achievements</h5>
+                    <?php if ($achievements_result): ?>
+                        <ul>
+                            <?php foreach ($achievements_result as $achievement): ?>
+                                <li><?php echo htmlspecialchars($achievement['achievement_name']); ?> (<?php echo htmlspecialchars($achievement['achievement_date']); ?>)</li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p>No recent achievements found.</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- External JS Libraries -->
+<!-- External Libraries JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
