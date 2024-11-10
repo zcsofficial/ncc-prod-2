@@ -1,7 +1,5 @@
 <?php
 // Assuming you have some logic to check if the user is logged in and their role.
-// Example:
-
 
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['user_id']);
@@ -25,16 +23,32 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 
                 <!-- Show links only if the user is logged in -->
                 <?php if ($isLoggedIn): ?>
-                   
                     <li class="nav-item"><a class="nav-link" href="attendance.php">Attendance</a></li>
-                   
                 <?php endif; ?>
 
+                <li class="nav-item"><a class="nav-link" href="camp.php">Camps</a></li>
+                <li class="nav-item"><a class="nav-link" href="testimonial.php">Testimonial</a></li>
                 <li class="nav-item"><a class="nav-link" href="contact.php">Contact</a></li>
             </ul>
 
-            <!-- User Profile and Admin Options -->
+            <!-- Notifications and User Profile -->
             <?php if ($isLoggedIn): ?>
+                <!-- Notification Icon -->
+                <div class="dropdown ms-3">
+                    <button class="btn btn-outline-secondary rounded-pill" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge bg-danger">3</span> <!-- Example badge count -->
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-envelope"></i> New message received</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile updated</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> System settings changed</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-center" href="notifications.php">View all notifications</a></li>
+                    </ul>
+                </div>
+
+                <!-- User Profile and Admin Options -->
                 <div class="dropdown ms-3">
                     <button class="btn btn-primary dropdown-toggle rounded-pill" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-user"></i> Profile
@@ -56,3 +70,14 @@ $isAdmin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     </div>
 </nav>
 
+<!-- Optional CSS for Notification Badge -->
+<style>
+    .badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        padding: 5px 10px;
+        border-radius: 50%;
+        font-size: 0.8em;
+    }
+</style>

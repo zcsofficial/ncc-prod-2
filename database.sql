@@ -1,12 +1,13 @@
+-- Existing tables
 CREATE DATABASE ncc_prod;
-
 USE ncc_prod;
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role ENUM('user', 'admin') NOT NULL
+    role ENUM('user', 'admin') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE cadets (
@@ -14,13 +15,16 @@ CREATE TABLE cadets (
     user_id INT NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     dob DATE NOT NULL,
-    rank VARCHAR(50) NOT NULL,
+    `rank` VARCHAR(50) NOT NULL, 
+    rank_priority INT ,
     email VARCHAR(100) NOT NULL,
     contact_number VARCHAR(15) NOT NULL,
     emergency_contact_number VARCHAR(15) NOT NULL,
     profile_picture VARCHAR(255),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+
 
 CREATE TABLE posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -46,14 +50,30 @@ CREATE TABLE attendance (
     status ENUM('present', 'absent') DEFAULT 'absent',
     FOREIGN KEY (cadet_id) REFERENCES cadets(id) ON DELETE CASCADE,
     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
-    UNIQUE (cadet_id, event_id)  -- Prevents multiple attendance entries for the same cadet and event
+    UNIQUE (cadet_id, event_id)  
 );
+
+CREATE TABLE achievements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cadet_id INT NOT NULL,
+    achievement_name VARCHAR(255) NOT NULL,
+    achievement_date DATE NOT NULL,
+    FOREIGN KEY (cadet_id) REFERENCES cadets(id) ON DELETE CASCADE
+);
+
+CREATE TABLE camps (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    camp_name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    camp_details TEXT NOT NULL,
+    camp_date DATE NOT NULL,
+    eligibility TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE carousel_images (
     id INT AUTO_INCREMENT PRIMARY KEY,
     image VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-ALTER TABLE users 
-ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
