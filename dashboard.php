@@ -5,6 +5,25 @@ session_start();
 // Check if the user is logged in
 $isLoggedIn = isset($_SESSION['user_id']);
 $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+
+// Fetch notifications for the logged-in user
+if ($isLoggedIn) {
+    $userId = $_SESSION['user_id'];
+
+    // Fetch notifications from the database
+    $stmt = $conn->prepare("SELECT * FROM notifications WHERE user_id = :user_id ORDER BY created_at DESC LIMIT 5");
+    $stmt->bindParam(':user_id', $userId);
+    $stmt->execute();
+    $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Count unread notifications
+    $unreadCount = 0;
+    foreach ($notifications as $notification) {
+        if (isset($notification['read']) && $notification['read'] == 0) {
+            $unreadCount++;
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -17,13 +36,28 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
     <!-- External CSS Libraries -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f8f9fa;
+        }
+
+        .header {
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+        .header .navbar-nav .nav-link {
+            color: #fff;
+            padding: 15px 20px;
+        }
+
+        .header .navbar-nav .nav-link:hover {
+            background-color: #495057;
+            border-radius: 5px;
         }
 
         h2 {
@@ -35,7 +69,6 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
         .carousel-item img {
             max-height: 500px;
             object-fit: cover;
-            transition: transform 0.3s ease-in-out;
         }
 
         .carousel-item img.zoomed {
@@ -75,6 +108,14 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
             margin: 0 10px;
         }
 
+        .container {
+            margin-top: 50px;
+        }
+
+        .alert {
+            margin-top: 20px;
+        }
+
         .zoomed {
             transform: scale(1.5);
             z-index: 1;
@@ -90,29 +131,34 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
             }
         }
 
-        .container {
-            margin-top: 50px;
-        }
-        .alert {
+        .notification-btn {
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
+<!-- Navbar -->
 <?php include('navbar.php'); ?>
 
 <div class="container my-5">
     <?php if ($isAdmin): ?>
-        <!-- Button to open the blog post creation modal -->
+        <!-- Admin-Only Buttons -->
         <div class="d-flex justify-content-start mb-3">
-            <button type="button" class="btn btn-primary me-2 animate__animated animate__fadeIn" data-bs-toggle="modal" data-bs-target="#addBlogModal">
+            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addBlogModal">
                 <i class="fas fa-plus-circle"></i> Add New Blog Post
             </button>
-            <!-- Button to open the image upload modal -->
-            <button type="button" class="btn btn-secondary animate__animated animate__fadeIn" data-bs-toggle="modal" data-bs-target="#addImageModal">
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#addImageModal">
                 <i class="fas fa-image"></i> Upload New Image for Carousel
             </button>
+        </div>
+    <?php endif; ?>
+
+    <!-- Notification Section (For Logged-In Users) -->
+    <?php if ($isLoggedIn): ?>
+        <div class="alert alert-info" role="alert">
+            You have <strong><?= $unreadCount ?></strong> unread notifications.
+            <a href="notifications.php" class="btn btn-link">View All Notifications</a>
         </div>
     <?php endif; ?>
 
@@ -122,7 +168,7 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
             <h2 class="text-center mb-4">Blogs</h2>
             <div class="row">
                 <?php
-                // Fetch all blog posts from the database using PDO
+                // Fetch all blog posts from the database
                 $query = "SELECT posts.id, posts.title, posts.body, posts.image, users.username, posts.created_at 
                           FROM posts JOIN users ON posts.author_id = users.id ORDER BY posts.created_at DESC";
                 $stmt = $conn->prepare($query);
@@ -157,7 +203,7 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
             <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <?php
-                    // Fetch all carousel images from the database using PDO
+                    // Fetch all carousel images from the database
                     $query = "SELECT * FROM carousel_images ORDER BY created_at DESC";
                     $stmt = $conn->prepare($query);
                     $stmt->execute();
@@ -244,7 +290,6 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
         </div>
     </div>
 </div>
-
 
 <!-- Footer Section -->
 <footer>
