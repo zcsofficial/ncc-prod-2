@@ -202,10 +202,10 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
     <a href="manage_users.php"><i class="fas fa-users"></i> Manage Users</a>
     <a href="manage_blogs.php"><i class="fas fa-blog"></i> Manage Blogs</a>
     <a href="attendance.php"><i class="fas fa-check-circle"></i> Attendance</a>
-    <a href="register_cadet.php"><i class="fas fa-user-plus"></i> Register Cadet</a>
-    <a href="add_achievements.php"><i class="fas fa-trophy"></i> Add Achievements</a>
+    <a href="#"><i class="fas fa-user-plus"></i> Register Cadet</a>
+    <a href="achievement.php"><i class="fas fa-trophy"></i> Add Achievements</a>
     <a href="send_notification.php"><i class="fas fa-comment"></i> Send Notification</a>
-    <a href="add_camps.php"><i class="fas fa-campground"></i> Add Camps</a>
+    <a href="camp.php"><i class="fas fa-campground"></i> Add Camps</a>
 </div>
 
 <!-- Main Content -->

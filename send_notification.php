@@ -157,6 +157,7 @@ if (isset($_POST['add_camp'])) {
     </style>
 </head>
 <body>
+
     <div class="container">
         <h2 class="text-center mb-4">Send Notifications</h2>
         
@@ -178,7 +179,7 @@ if (isset($_POST['add_camp'])) {
             </div>
         </div>
 
-       
+        
 
         <!-- Form to send notification for specific event or camp -->
         <div class="card mb-4">
@@ -229,5 +230,6 @@ if (isset($_POST['add_camp'])) {
             </div>
         </div>
     </div>
+    
 </body>
 </html>

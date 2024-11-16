@@ -84,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
     <style>
         body {
             font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
         }
         .back-btn {
             margin-bottom: 20px;
@@ -94,12 +95,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
             margin-bottom: 10px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
         }
         .camp-item h5 {
             color: #007bff;
         }
         .badge {
             font-size: 0.9em;
+        }
+        .btn-primary, .btn-success {
+            background-color: #FF3A3A; /* Neon Red */
+            border-color: #FF3A3A;
+        }
+        .btn-primary:hover, .btn-success:hover {
+            background-color: #FF1A1A;
+            border-color: #FF1A1A;
+        }
+        .form-control {
+            border-radius: 25px;
+        }
+        .form-label {
+            font-weight: bold;
         }
     </style>
 </head>
@@ -169,14 +185,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
                     <option value="SENIOR UNDER OFFICER (SUO)">SENIOR UNDER OFFICER (SUO)</option>
                     <option value="ASSOCIATE NCC OFFICER (ANO)">ASSOCIATE NCC OFFICER (ANO)</option>
                     <option value="COMPANY SERGEANT MAJOR (CSM)">COMPANY SERGEANT MAJOR (CSM)</option>
+                    <option value="CADET MAJOR (CM)">CADET MAJOR (CM)</option>
                 </select>
             </div>
             <div class="mb-3">
-                <label for="eligibility_achievements" class="form-label">Eligibility - Achievements</label>
+                <label for="eligibility_achievements" class="form-label">Minimum Achievements</label>
                 <input type="number" name="eligibility_achievements" id="eligibility_achievements" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label for="eligibility_attendance" class="form-label">Eligibility - Attendance (%)</label>
+                <label for="eligibility_attendance" class="form-label">Minimum Attendance (%)</label>
                 <input type="number" name="eligibility_attendance" id="eligibility_attendance" class="form-control" required>
             </div>
             <button type="submit" class="btn btn-success">Submit</button>
@@ -184,15 +201,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isAdmin) {
     <?php endif; ?>
 </div>
 
-<!-- Bootstrap and jQuery JS for functionality -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Function to toggle the display of the form
+    // Toggle visibility of the Add Camp form for admins
     function toggleForm() {
         const form = document.getElementById('campForm');
-        form.style.display = (form.style.display === 'none') ? 'block' : 'none';
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
 </script>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 
 </body>
 </html>

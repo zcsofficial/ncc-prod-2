@@ -64,6 +64,27 @@ try {
         .btn-add:hover {
             background-color: #218838;
         }
+        .navbar {
+            background-color: #FF3A3A; /* Neon Red */
+        }
+        .navbar-brand {
+            color: #fff;
+        }
+        .navbar-nav .nav-link {
+            color: #fff;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #FF1A1A;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
         @media (max-width: 768px) {
             .table-responsive {
                 font-size: 14px;
@@ -76,10 +97,12 @@ try {
     </style>
 </head>
 <body>
+    
+<?php include('navbar.php'); ?>
+
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="my-3">Manage Users</h1>
-            
             <a href="admin_console.php" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back</a>
         </div>
 
@@ -122,6 +145,11 @@ try {
             </table>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Admin Dashboard. All rights reserved.</p>
+    </footer>
 
     <!-- Bootstrap JavaScript and dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
