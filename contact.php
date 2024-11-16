@@ -1,4 +1,6 @@
 <?php
+include 'db.php';
+session_start();
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = htmlspecialchars($_POST['name']);
@@ -131,6 +133,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 font-size: 28px;
             }
         }
+
+        /* Footer styles */
+        footer {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer .social-icons {
+            margin: 20px 0;
+        }
+
+        footer .footer-icon {
+            color: #ffffff;
+            font-size: 20px;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        footer .footer-icon:hover {
+            color: #28a745;
+        }
     </style>
 </head>
 <body>
@@ -223,6 +248,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="notification <?php echo isset($notificationType) ? $notificationType : ''; ?>" id="notification">
     <?php echo isset($notification) ? $notification : ''; ?>
 </div>
+
+<!-- Footer Section -->
+<footer>
+    <div class="social-icons">
+        <a href="#" class="footer-icon"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="footer-icon"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="footer-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="footer-icon"><i class="fab fa-linkedin-in"></i></a>
+    </div>
+    <p>&copy; 2024 NCC Cadets. All Rights Reserved.</p>
+</footer>
 
 <!-- External JS Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>

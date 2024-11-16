@@ -1,6 +1,6 @@
 <?php
-// Include the database connection file
-include('db.php');
+include 'db.php';
+session_start();
 
 // Handle form submission to add achievement with certificate upload
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
@@ -72,8 +72,8 @@ $achievements = $achievements_stmt->fetchAll(PDO::FETCH_ASSOC);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: #1c2331;
-            color: white;
+            background-color: #f8f9fa; /* Light background */
+            color: #333; /* Dark text */
         }
 
         /* Preloader */
@@ -112,8 +112,8 @@ $achievements = $achievements_stmt->fetchAll(PDO::FETCH_ASSOC);
 
         /* Achievements Section */
         #achievements {
-            background-color: #1c2331;
-            color: white;
+            background-color: #f8f9fa; /* Light background */
+            color: #333; /* Dark text */
             padding: 60px 15px;
             text-align: center;
         }
@@ -127,7 +127,7 @@ $achievements = $achievements_stmt->fetchAll(PDO::FETCH_ASSOC);
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease-in-out;
-            background-color: #343a40;
+            background-color: #ffffff; /* White background */
         }
 
         .achievement-card:hover {
@@ -135,7 +135,7 @@ $achievements = $achievements_stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .card-body {
-            color: white;
+            color: #333;
         }
 
         .card-title {
@@ -149,21 +149,22 @@ $achievements = $achievements_stmt->fetchAll(PDO::FETCH_ASSOC);
 
         /* Footer */
         footer {
-            background-color: #343a40;
-            color: white;
+            background-color: #ffffff; /* White background */
+            color: #333; /* Dark text */
             padding: 30px 15px;
             text-align: center;
             margin-top: auto;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .footer-icon {
             font-size: 1.5rem;
             margin: 0 10px;
-            color: white;
+            color: #333;
         }
 
         .footer-icon:hover {
-            color: #17a2b8;
+            color: #007bff; /* Blue hover effect */
         }
 
         @media (max-width: 767px) {
@@ -178,10 +179,10 @@ $achievements = $achievements_stmt->fetchAll(PDO::FETCH_ASSOC);
 <!-- Preloader -->
 <div id="preloader">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" stroke="#000" stroke-width="5" fill="none" stroke-dasharray="283" stroke-dashoffset="280">
+        <circle cx="50" cy="50" r="45" stroke="#007bff" stroke-width="5" fill="none" stroke-dasharray="283" stroke-dashoffset="280">
             <animate attributeName="stroke-dashoffset" from="283" to="0" dur="2s" repeatCount="indefinite" />
         </circle>
-        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-size="16" font-family="Arial" fill="#000">NCC</text>
+        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-size="16" font-family="Arial" fill="#007bff">NCC</text>
     </svg>
 </div>
 
@@ -227,23 +228,23 @@ $achievements = $achievements_stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="mb-3">
                         <label for="certificate" class="form-label">Certificate (JPG, PNG, JPEG | Max: 5MB)</label>
                         <input type="file" name="certificate" id="certificate" class="form-control" accept=".jpg,.jpeg,.png" required>
-                        <small class="form-text text-muted">Allowed file formats: JPG, PNG. Max size: 5MB.</small>
+                        <small class="form-text text-muted">Please upload the certificate in JPG, PNG, or JPEG format.</small>
                     </div>
-                    <button type="submit" name="submit" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Add Achievement</button>
+                    <button type="submit" name="submit" class="btn btn-primary">Add Achievement</button>
                 </form>
             </div>
         </div>
 
-        <!-- Display list of achievements -->
+        <!-- Display existing achievements -->
         <div class="row">
             <?php foreach ($achievements as $achievement): ?>
-                <div class="col-md-4 mb-4">
-                    <div class="card achievement-card">
-                        <img src="<?php echo $achievement['certificate']; ?>" class="card-img-top" alt="Certificate">
+                <div class="col-md-4">
+                    <div class="card achievement-card mb-4">
+                        <img src="<?php echo $achievement['certificate']; ?>" class="card-img-top" alt="Certificate Image">
                         <div class="card-body">
                             <h5 class="card-title"><?php echo $achievement['achievement_name']; ?></h5>
-                            <p class="card-text">Cadet: <?php echo $achievement['full_name']; ?></p>
-                            <p class="card-text">Date: <?php echo $achievement['achievement_date']; ?></p>
+                            <p class="card-text">Achieved by: <?php echo $achievement['full_name']; ?></p>
+                            <p class="card-text">Date: <?php echo date('F j, Y', strtotime($achievement['achievement_date'])); ?></p>
                         </div>
                     </div>
                 </div>
@@ -254,23 +255,22 @@ $achievements = $achievements_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!-- Footer -->
 <footer>
-    <p>&copy; 2024 NCC Journey. All Rights Reserved.</p>
-    <div>
+    <div class="social-icons">
         <a href="#" class="footer-icon"><i class="fab fa-facebook"></i></a>
         <a href="#" class="footer-icon"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="footer-icon"><i class="fab fa-linkedin"></i></a>
+        <a href="#" class="footer-icon"><i class="fab fa-instagram"></i></a>
     </div>
+    <p>&copy; 2024 NCC Journey. All Rights Reserved.</p>
 </footer>
 
-<!-- JavaScript Libraries -->
+<!-- JS Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
-<!-- Preloader Script -->
+<!-- Preloader hide script -->
 <script>
-    window.addEventListener('load', function () {
+    window.addEventListener('load', function() {
         document.getElementById('preloader').classList.add('hidden');
     });
 </script>
-
 </body>
 </html>
