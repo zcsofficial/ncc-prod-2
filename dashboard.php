@@ -202,6 +202,62 @@ if ($isLoggedIn) {
         </div>
     </section>
 </div>
+<!-- Modal for Adding Blog Post (Admin Only) -->
+<div class="modal fade" id="addBlogModal" tabindex="-1" aria-labelledby="addBlogModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="add_blog.php" method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBlogModalLabel">Add New Blog Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="body" class="form-label">Body</label>
+                        <textarea class="form-control" id="body" name="body" rows="5" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Upload Image</label>
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Image Upload (Admin Only) -->
+<div class="modal fade" id="addImageModal" tabindex="-1" aria-labelledby="addImageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addImageModalLabel">Upload New Carousel Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="add_image.php" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="carousel_image" class="form-label">Choose an Image</label>
+                        <input type="file" class="form-control" name="carousel_image" id="carousel_image" required>
+                        <small class="form-text text-muted">Allowed file types: JPG, JPEG, PNG, GIF. Max size: 5MB.</small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Footer -->
 <footer>

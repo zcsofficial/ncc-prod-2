@@ -214,10 +214,9 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
     </div>
 </section>
 
-<!-- Image Carousel Section -->
+<!-- Carousel Section -->
 <section id="carousel" class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-4">Cadets Gallery <i class="fas fa-images"></i></h2>
+        <h2 class="text-center mb-4">Cadets Gallery</h2>
         <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <?php
@@ -227,27 +226,26 @@ $isAdmin = $isLoggedIn && isset($_SESSION['role']) && $_SESSION['role'] === 'adm
                 $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $activeClass = "active";
 
-                foreach ($images as $image) :
+                foreach ($images as $image):
                 ?>
                     <div class="carousel-item <?php echo $activeClass; ?>">
-                        <img src="uploads/<?php echo htmlspecialchars($image['image']); ?>" class="d-block w-100" alt="Carousel Image">
+                        <img src="<?php echo htmlspecialchars($image['image']); ?>" class="d-block w-100" alt="Carousel Image" onclick="zoomImage(this)">
                     </div>
                 <?php
-                    $activeClass = ""; 
+                    $activeClass = "";
                 endforeach;
                 ?>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="carousel-control-prev-icon"></span>
                 <span class="visually-hidden">Previous</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="carousel-control-next-icon"></span>
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-    </div>
-</section>
+    </section>
 
 <!-- Footer Section -->
 <footer>

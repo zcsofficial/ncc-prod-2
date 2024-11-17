@@ -269,7 +269,42 @@ if ($isLoggedIn) {
         </div>
     </section>
 </div>
-
+<!-- Add Testimonial Modal -->
+<div class="modal fade" id="addTestimonialModal" tabindex="-1" aria-labelledby="addTestimonialModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTestimonialModalLabel">Add Testimonial</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="testimonials.php" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" name="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" name="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="rank" class="form-label">Rank</label>
+                <input type="text" class="form-control" name="rank" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" name="description" rows="4" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Image</label>
+                <input type="file" class="form-control" name="image">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- Footer -->
 <footer>
     <div class="container">
