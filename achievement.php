@@ -2,8 +2,11 @@
 include 'db.php';
 session_start();
 
+// Check if the user is logged in and is an admin
+$is_admin = isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin';
+
 // Handle form submission to add achievement with certificate upload
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit']) && $is_admin) {
     $cadet_id = $_POST['cadet_id'];
     $achievement_name = $_POST['achievement_name'];
     $achievement_date = $_POST['achievement_date'];
@@ -42,9 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
     }
 }
 
-// Fetch cadets from the database
-$cadets_stmt = $conn->query("SELECT id, full_name FROM cadets");
-$cadets = $cadets_stmt->fetchAll(PDO::FETCH_ASSOC);
+// Fetch cadets from the database (only for admins)
+if ($is_admin) {
+    $cadets_stmt = $conn->query("SELECT id, full_name FROM cadets");
+    $cadets = $cadets_stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 // Fetch achievements to display
 $achievements_stmt = $conn->query("SELECT a.id, a.achievement_name, a.achievement_date, c.full_name, a.certificate FROM achievements a JOIN cadets c ON a.cadet_id = c.id");
@@ -192,7 +197,7 @@ $achievements = $achievements_stmt->fetchAll(PDO::FETCH_ASSOC);
 <!-- Achievements Section -->
 <section id="achievements">
     <div class="container">
-        <h2 class="section-title">Manage Achievements</h2>
+        <h2 class="section-title">Achievements</h2>
 
         <!-- Show success or error message -->
         <?php if (isset($message)): ?>
@@ -201,39 +206,41 @@ $achievements = $achievements_stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="alert alert-danger"><?php echo $error; ?></div>
         <?php endif; ?>
 
-        <!-- Form to add new achievement -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title">Add Achievement</h5>
+        <!-- Form to add new achievement (only for admins) -->
+        <?php if ($is_admin): ?>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title">Add Achievement</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="achievement.php" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="cadet_id" class="form-label">Cadet</label>
+                            <select name="cadet_id" id="cadet_id" class="form-select" required>
+                                <option value="" disabled selected>Select Cadet</option>
+                                <?php foreach ($cadets as $cadet): ?>
+                                    <option value="<?php echo $cadet['id']; ?>"><?php echo $cadet['full_name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="achievement_name" class="form-label">Achievement Name</label>
+                            <input type="text" name="achievement_name" id="achievement_name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="achievement_date" class="form-label">Achievement Date</label>
+                            <input type="date" name="achievement_date" id="achievement_date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="certificate" class="form-label">Certificate (JPG, PNG, JPEG | Max: 5MB)</label>
+                            <input type="file" name="certificate" id="certificate" class="form-control" accept=".jpg,.jpeg,.png" required>
+                            <small class="form-text text-muted">Please upload the certificate in JPG, PNG, or JPEG format.</small>
+                        </div>
+                        <button type="submit" name="submit" class="btn btn-primary">Add Achievement</button>
+                    </form>
+                </div>
             </div>
-            <div class="card-body">
-                <form method="POST" action="achievement.php" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="cadet_id" class="form-label">Cadet</label>
-                        <select name="cadet_id" id="cadet_id" class="form-select" required>
-                            <option value="" disabled selected>Select Cadet</option>
-                            <?php foreach ($cadets as $cadet): ?>
-                                <option value="<?php echo $cadet['id']; ?>"><?php echo $cadet['full_name']; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="achievement_name" class="form-label">Achievement Name</label>
-                        <input type="text" name="achievement_name" id="achievement_name" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="achievement_date" class="form-label">Achievement Date</label>
-                        <input type="date" name="achievement_date" id="achievement_date" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="certificate" class="form-label">Certificate (JPG, PNG, JPEG | Max: 5MB)</label>
-                        <input type="file" name="certificate" id="certificate" class="form-control" accept=".jpg,.jpeg,.png" required>
-                        <small class="form-text text-muted">Please upload the certificate in JPG, PNG, or JPEG format.</small>
-                    </div>
-                    <button type="submit" name="submit" class="btn btn-primary">Add Achievement</button>
-                </form>
-            </div>
-        </div>
+        <?php endif; ?>
 
         <!-- Display existing achievements -->
         <div class="row">
