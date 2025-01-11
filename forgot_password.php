@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
 
         // Send email (pseudo-code)
-        $resetLink = "http://yourdomain.com/reset_password.php?token=" . $token;
+        $resetLink = "https://orangered-mantis-455194.hostingersite.com/reset_password.php?token=" . $token;
         mail($email, "Password Reset Request", "Click the following link to reset your password: $resetLink");
 
         $message = "success"; // Success message for SweetAlert

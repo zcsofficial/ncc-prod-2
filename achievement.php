@@ -62,6 +62,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit']) && $is_admin
     }
 }
 
+// Handle delete achievement
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete']) && $is_admin) {
+    $achievement_id = htmlspecialchars($_POST['achievement_id']);
+    try {
+        $stmt = $conn->prepare("DELETE FROM achievements WHERE id = ?");
+        $stmt->execute([$achievement_id]);
+        $message = "Achievement deleted successfully!";
+    } catch (PDOException $e) {
+        $error = "Error: " . $e->getMessage();
+    }
+}
+
 $cadets = $is_admin ? fetchCadets($conn) : [];
 $achievements = fetchAchievements($conn);
 ?>
@@ -76,182 +88,77 @@ $achievements = fetchAchievements($conn);
     <!-- CSS Libraries -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-   <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: #f8f9fa; /* Light background */
-            color: #333; /* Dark text */
+    <style>
+        .card-body button {
+            margin-right: 5px;
         }
+        .btn {
+    color: #fff !important;
+    background-color: #007bff !important; /* Or use any other color */
+    border: 1px solid #007bff !important;
+}
 
-        /* Preloader */
-        #preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            opacity: 1;
-            transition: opacity 0.5s ease-in-out;
-        }
+.btn:hover {
+    background-color: #0056b3 !important;
+    border-color: #0056b3 !important;
+}
 
-        #preloader.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        #preloader svg {
-            width: 80px;
-            height: 80px;
-        }
-
-        /* Section Titles */
-        h2 {
-            font-size: 2.2rem;
-            font-weight: 600;
-            color: #343a40;
-            margin-bottom: 20px;
-        }
-
-        /* Achievements Section */
-        #achievements {
-            background-color: #f8f9fa; /* Light background */
-            color: #333; /* Dark text */
-            padding: 60px 15px;
-            text-align: center;
-        }
-
-        #achievements .section-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-
-        .achievement-card {
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease-in-out;
-            background-color: #ffffff; /* White background */
-        }
-
-        .achievement-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-body {
-            color: #333;
-        }
-
-        .card-title {
-            font-weight: 600;
-        }
-
-        .card img {
-            object-fit: cover;
-            max-height: 250px;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #ffffff; /* White background */
-            color: #333; /* Dark text */
-            padding: 30px 15px;
-            text-align: center;
-            margin-top: auto;
-            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .footer-icon {
-            font-size: 1.5rem;
-            margin: 0 10px;
-            color: #333;
-        }
-
-        .footer-icon:hover {
-            color: #007bff; /* Blue hover effect */
-        }
-
-        @media (max-width: 767px) {
-            #achievements .section-title {
-                font-size: 2rem;
-            }
-        }
     </style>
 </head>
 <body>
-
-
-
-<!-- Navbar -->
 <?php include('navbar.php'); ?>
 
-<!-- Achievements Section -->
 <section id="achievements">
     <div class="container">
-        <h2 class="section-title">Achievements</h2>
+        <h2 class="text-center">Achievements</h2>
 
-        <!-- Feedback Messages -->
-        <?php if (isset($message)): ?>
-            <div class="alert alert-success"><?php echo $message; ?></div>
-        <?php elseif (isset($error)): ?>
-            <div class="alert alert-danger"><?php echo $error; ?></div>
-        <?php endif; ?>
-
-        <!-- Admin Form -->
         <?php if ($is_admin): ?>
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="card-title">Add Achievement</h5>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="achievement.php" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label for="cadet_id" class="form-label">Cadet</label>
-                            <select name="cadet_id" id="cadet_id" class="form-select" required>
-                                <option value="" disabled selected>Select Cadet</option>
-                                <?php foreach ($cadets as $cadet): ?>
-                                    <option value="<?php echo $cadet['id']; ?>"><?php echo $cadet['full_name']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="achievement_name" class="form-label">Achievement Name</label>
-                            <input type="text" name="achievement_name" id="achievement_name" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="achievement_date" class="form-label">Achievement Date</label>
-                            <input type="date" name="achievement_date" id="achievement_date" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="certificate" class="form-label">Certificate (JPG, PNG, JPEG | Max: 5MB)</label>
-                            <input type="file" name="certificate" id="certificate" class="form-control" accept=".jpg,.jpeg,.png" required>
-                        </div>
-                        <button type="submit" name="submit" class="btn btn-primary">Add Achievement</button>
-                    </form>
-                </div>
+            <button class="btn btn-primary mb-3" id="toggle-add-achievement">Add Achievement</button>
+            <div id="add-achievement-form" style="display: none;">
+                <form method="POST" action="achievement.php" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="cadet_id" class="form-label">Cadet</label>
+                        <select name="cadet_id" class="form-select" required>
+                            <option value="" disabled selected>Select Cadet</option>
+                            <?php foreach ($cadets as $cadet): ?>
+                                <option value="<?php echo $cadet['id']; ?>"><?php echo $cadet['full_name']; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="achievement_name" class="form-label">Achievement Name</label>
+                        <input type="text" name="achievement_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="achievement_date" class="form-label">Achievement Date</label>
+                        <input type="date" name="achievement_date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="certificate" class="form-label">Certificate</label>
+                        <input type="file" name="certificate" class="form-control" required>
+                    </div>
+                    <button type="submit" name="submit" class="btn btn-success">Add</button>
+                </form>
             </div>
         <?php endif; ?>
 
-        <!-- Achievements Display -->
         <div class="row">
             <?php foreach ($achievements as $achievement): ?>
                 <div class="col-md-4">
-                    <div class="card mb-4">
-                        <img src="<?php echo $achievement['certificate']; ?>" class="card-img-top" alt="Certificate">
+                    <div class="card">
+                        <img src="<?php echo $achievement['certificate']; ?>" class="card-img-top">
                         <div class="card-body">
-                            <h5 class="card-title"><?php echo $achievement['achievement_name']; ?></h5>
-                            <p class="card-text">Achieved by: <?php echo $achievement['full_name']; ?></p>
-                            <p class="card-text">Date: <?php echo date('F j, Y', strtotime($achievement['achievement_date'])); ?></p>
+                            <h5><?php echo $achievement['achievement_name']; ?></h5>
+                            <p>Cadet: <?php echo $achievement['full_name']; ?></p>
+                            <p>Date: <?php echo date('F j, Y', strtotime($achievement['achievement_date'])); ?></p>
+                            <?php if ($is_admin): ?>
+                                <form method="POST" action="achievement.php" style="display: inline;">
+                                    <input type="hidden" name="achievement_id" value="<?php echo $achievement['id']; ?>">
+                                    <button type="submit" name="delete" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                                <button class="btn btn-warning btn-sm edit-btn" data-id="<?php echo $achievement['id']; ?>" data-name="<?php echo $achievement['achievement_name']; ?>" data-date="<?php echo $achievement['achievement_date']; ?>">Edit</button>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -260,15 +167,55 @@ $achievements = fetchAchievements($conn);
     </div>
 </section>
 
-<!-- Footer -->
-<footer>
-    <!-- Footer Content -->
-</footer>
+<!-- Modal for Edit -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="editForm" method="POST" action="achievement.php">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Achievement</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="achievement_id" id="editAchievementId">
+                    <div class="mb-3">
+                        <label for="editAchievementName" class="form-label">Achievement Name</label>
+                        <input type="text" name="achievement_name" id="editAchievementName" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editAchievementDate" class="form-label">Achievement Date</label>
+                        <input type="date" name="achievement_date" id="editAchievementDate" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" name="edit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-<!-- JS Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Preloader hide logic
+    document.getElementById('toggle-add-achievement').addEventListener('click', function() {
+        const form = document.getElementById('add-achievement-form');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+            const date = this.dataset.date;
+
+            document.getElementById('editAchievementId').value = id;
+            document.getElementById('editAchievementName').value = name;
+            document.getElementById('editAchievementDate').value = date;
+
+            new bootstrap.Modal(document.getElementById('editModal')).show();
+        });
+    });
 </script>
 </body>
 </html>
