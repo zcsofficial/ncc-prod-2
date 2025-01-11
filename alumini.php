@@ -88,7 +88,7 @@ if ($isLoggedIn) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testimonials - NCC Journey</title>
+    <title>Alumini - NCC Journey</title>
 
     <!-- External CSS Libraries -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css" rel="stylesheet">
@@ -241,14 +241,14 @@ if ($isLoggedIn) {
     <?php if ($isAdmin): ?>
         <div class="d-flex justify-content-start mb-3">
             <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addTestimonialModal">
-                <i class="fas fa-plus-circle"></i> Add Testimonial
+                <i class="fas fa-plus-circle"></i> Add Alumini
             </button>
         </div>
     <?php endif; ?>
 
     <!-- Testimonial Section -->
     <section id="testimonials" class="py-5">
-        <h2 class="text-center mb-4">Testimonials</h2>
+        <h2 class="text-center mb-4">Alumini</h2>
         <div class="row">
             <?php foreach ($testimonials as $testimonial): ?>
                 <div class="col-md-4 mb-3">
@@ -274,7 +274,7 @@ if ($isLoggedIn) {
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addTestimonialModalLabel">Add Testimonial</h5>
+        <h5 class="modal-title" id="addTestimonialModalLabel">Add Alumini</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">

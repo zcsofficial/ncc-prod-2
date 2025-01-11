@@ -14,6 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $contact_number = $_POST['contact_number'];
     $emergency_contact_number = $_POST['emergency_contact_number'];
+    $cadet_batch = $_POST['cadet_batch'];
     
     // Profile picture upload handling
     $profile_picture = $_FILES['profile_picture']['name'];
@@ -45,8 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user_id = $conn->lastInsertId();
         
         // Insert into the cadets table (user_id, full_name, dob, `rank`, email, contact number, emergency contact number, profile_picture)
-        $stmt = $conn->prepare("INSERT INTO cadets (user_id, full_name, dob, `rank`, email, contact_number, emergency_contact_number, profile_picture) 
-            VALUES (:user_id, :full_name, :dob, :rank, :email, :contact_number, :emergency_contact_number, :profile_picture)");
+        $stmt = $conn->prepare("INSERT INTO cadets (user_id, full_name, dob, `rank`, email, contact_number, emergency_contact_number, cadet_batch, profile_picture) 
+            VALUES (:user_id, :full_name, :dob, :rank, :email, :contact_number, :emergency_contact_number, :cadet_batch, :profile_picture)");
         $stmt->bindParam(':user_id', $user_id);
         $stmt->bindParam(':full_name', $full_name);
         $stmt->bindParam(':dob', $dob);
@@ -54,6 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':contact_number', $contact_number);
         $stmt->bindParam(':emergency_contact_number', $emergency_contact_number);
+        $stmt->bindParam(':cadet_batch', $cadet_batch); // Bind the cadet_batch
         $stmt->bindParam(':profile_picture', $profile_picture);
         $stmt->execute();
         

@@ -334,6 +334,11 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
                         <input type="text" name="emergency_contact_number" id="emergency_contact_number" class="form-control" required>
                     </div>
 
+                    <div class="mb-3">
+                <label for="cadet_batch" class="form-label">Batch</label>
+                <input type="text" name="cadet_batch" id="cadet_batch" class="form-control" required>
+            </div>
+
                     <!-- Profile Picture -->
                     <div class="mb-3">
                         <label for="profile_picture" class="form-label">Profile Picture</label>
